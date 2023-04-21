@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { AES, TripleDES, Rabbit, RC4, enc } from 'crypto-js';
+import { AES, TripleDES, Rabbit, RC4, enc, pad } from 'crypto-js';
 
 const algos = { AES, TripleDES, Rabbit, RC4 };
 
@@ -100,11 +100,13 @@ const cypherAlgo = ref<keyof typeof algos>('AES');
 const cypherSecret = ref('16bit secret key');
 const cypherInitializationVector = ref('1234567812345678');
 const cypherOutput = computed(() => {
+  var cypherKey = enc.Utf8.parse(cypherSecret.value);
+  pad.ZeroPadding.pad(cypherKey, 2);
   var cfg = {};
   if (cypherAlgo.value === 'AES' || cypherAlgo.value === 'TripleDES') {
     cfg = { iv: enc.Utf8.parse(cypherInitializationVector.value) };
   }
-  return algos[cypherAlgo.value].encrypt(cypherInput.value, enc.Utf8.parse(cypherSecret.value), cfg).toString();
+  return algos[cypherAlgo.value].encrypt(cypherInput.value, cypherKey, cfg).toString();
 });
 
 const decryptInput = ref('DX+W8WBHbt08XoJNV8bcoQ==');
@@ -112,12 +114,12 @@ const decryptAlgo = ref<keyof typeof algos>('AES');
 const decryptSecret = ref('16bit secret key');
 const decryptInitializationVector = ref('1234567812345678');
 const decryptOutput = computed(() => {
+  var decryptKey = enc.Utf8.parse(decryptSecret.value);
+  pad.ZeroPadding.pad(decryptKey, 2);
   var cfg = {};
   if (decryptAlgo.value === 'AES' || decryptAlgo.value === 'TripleDES') {
     cfg = { iv: enc.Utf8.parse(decryptInitializationVector.value) };
   }
-  return algos[decryptAlgo.value]
-    .decrypt(decryptInput.value, enc.Utf8.parse(decryptSecret.value), cfg)
-    .toString(enc.Utf8);
+  return algos[decryptAlgo.value].decrypt(decryptInput.value, decryptKey, cfg).toString(enc.Utf8);
 });
 </script>
