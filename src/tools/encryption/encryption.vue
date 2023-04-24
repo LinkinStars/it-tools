@@ -101,7 +101,7 @@ const cypherSecret = ref('16bit secret key');
 const cypherInitializationVector = ref('1234567812345678');
 const cypherOutput = computed(() => {
   var cypherKey = enc.Utf8.parse(cypherSecret.value);
-  pad.ZeroPadding.pad(cypherKey, 2);
+  pad.ZeroPadding.pad(cypherKey, 4);
   var cfg = {};
   if (cypherAlgo.value === 'AES' || cypherAlgo.value === 'TripleDES') {
     cfg = { iv: enc.Utf8.parse(cypherInitializationVector.value) };
@@ -115,7 +115,7 @@ const decryptSecret = ref('16bit secret key');
 const decryptInitializationVector = ref('1234567812345678');
 const decryptOutput = computed(() => {
   var decryptKey = enc.Utf8.parse(decryptSecret.value);
-  pad.ZeroPadding.pad(decryptKey, 2);
+  pad.ZeroPadding.pad(decryptKey, 4);
   var cfg = {};
   if (decryptAlgo.value === 'AES' || decryptAlgo.value === 'TripleDES') {
     cfg = { iv: enc.Utf8.parse(decryptInitializationVector.value) };
